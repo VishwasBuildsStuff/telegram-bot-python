@@ -1,8 +1,15 @@
 import os
+import logging
 import random
 from datetime import datetime
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
+
+logging.basicConfig(
+    format = '%(asctime)s - %(name)s - %(levelname)s -%(message)s',
+    level = logging.INFO
+)
+logger = logging.getLogger(__name__)
 
 DSA_QUESTIONS = {
     "Arrays": [
@@ -334,6 +341,13 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def main():
     TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "8341451111:AAFSFVQ8Ax_wY_mc_UakFy-qea3OHP5POTs")
     
+    if not TOKEN : 
+        logger.error("Environment not Avaliable")
+        return 
+    logger.info("Starting Bot Now")
+    
+
+    
     if TOKEN == "YOUR_BOT_TOKEN_HERE":
         print("Please set TELEGRAM_BOT_TOKEN environment variable!")
         return
@@ -349,6 +363,9 @@ def main():
     application.add_handler(CommandHandler("hint", hint))
     application.add_handler(CommandHandler("solution", solution))
     application.add_handler(CallbackQueryHandler(button_callback))
+    
+    logger.info("Bot is running")
+    application.run_polling(allowed_updates=Update.ALL_TYPES)
     
     print("Bot is running")
     application.run_polling(allowed_updates=Update.ALL_TYPES)
